@@ -1,4 +1,4 @@
-library chat_bubbles;
+library chat_bubbles_with_time;
 
 ///
 /// all the widgets of the package export here

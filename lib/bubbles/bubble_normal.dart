@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 const double BUBBLE_RADIUS = 16;
 
@@ -23,12 +24,14 @@ class BubbleNormal extends StatelessWidget {
   final bool delivered;
   final bool seen;
   final TextStyle textStyle;
+  final DateTime? timestamp;
   final BoxConstraints? constraints;
 
   BubbleNormal({
     Key? key,
     required this.text,
     this.constraints,
+    this.timestamp,
     this.bubbleRadius = BUBBLE_RADIUS,
     this.isSender = true,
     this.color = Colors.white70,
@@ -46,9 +49,13 @@ class BubbleNormal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool stateTick = false;
-    Icon? stateIcon;
+    Widget? stateIcon;
     if (sent) {
       stateTick = true;
+      // stateIcon = Text(
+      //   '12:30',
+      //   style: TextStyle(fontSize: 12),
+      // );
       stateIcon = Icon(
         Icons.done,
         size: 18,
@@ -71,6 +78,10 @@ class BubbleNormal extends StatelessWidget {
         color: Color(0xFF92DEDA),
       );
     }
+
+    double rightPadding = 12;
+    rightPadding += stateTick ? 16 : 0;
+    rightPadding += timestamp != null ? 32 : 0;
 
     return Row(
       children: <Widget>[
@@ -108,9 +119,7 @@ class BubbleNormal extends StatelessWidget {
               child: Stack(
                 children: <Widget>[
                   Padding(
-                    padding: stateTick
-                        ? EdgeInsets.fromLTRB(12, 6, 28, 6)
-                        : EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    padding: EdgeInsets.fromLTRB(12, 6, rightPadding, 6),
                     child: Text(
                       text,
                       style: textStyle,
@@ -126,6 +135,18 @@ class BubbleNormal extends StatelessWidget {
                       : SizedBox(
                           width: 1,
                         ),
+                  timestamp != null
+                      ? Positioned(
+                          bottom: 4,
+                          right: stateTick ? 26 : 6,
+                          child: Text(
+                            DateFormat('HH:mm').format(timestamp!),
+                            style: textStyle.copyWith(fontSize: 12),
+                          ),
+                        )
+                      : SizedBox(
+                          width: 1,
+                        )
                 ],
               ),
             ),

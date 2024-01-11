@@ -1,4 +1,4 @@
-import 'package:chat_bubbles/date_chips/date_chip.dart';
+import 'package:chat_bubbles_with_time/date_chips/date_chip.dart';
 
 import './date_chip_text.dart';
 
