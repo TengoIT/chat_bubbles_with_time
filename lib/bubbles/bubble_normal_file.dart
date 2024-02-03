@@ -25,11 +25,13 @@ class BubbleNormalFile extends StatelessWidget {
   final TextStyle textStyle;
   final DateTime? timestamp;
   final BoxConstraints? constraints;
+  final VoidCallback openFileFunc;
 
   BubbleNormalFile({
     Key? key,
     required this.nameFile,
     required this.amountOfMemory,
+    required this.openFileFunc,
     this.constraints,
     this.timestamp,
     this.bubbleRadius = 16,
@@ -52,10 +54,6 @@ class BubbleNormalFile extends StatelessWidget {
     Widget? stateIcon;
     if (sent) {
       stateTick = true;
-      // stateIcon = Text(
-      //   '12:30',
-      //   style: TextStyle(fontSize: 12),
-      // );
       stateIcon = Icon(
         Icons.done,
         size: 18,
@@ -116,74 +114,94 @@ class BubbleNormalFile extends StatelessWidget {
                       : 16),
                 ),
               ),
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(12, 6, rightPadding, 6),
-                    child: Container(
-                      width: 40.0,
-                      height: 40.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      child: Icon(
-                        Icons.file_present_sharp,
-                        color: Colors.black54,
-                      ),
-                    ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: openFileFunc,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(bubbleRadius),
+                    topRight: Radius.circular(bubbleRadius),
+                    bottomLeft: Radius.circular(tail
+                        ? isSender
+                            ? bubbleRadius
+                            : 0
+                        : 16),
+                    bottomRight: Radius.circular(tail
+                        ? isSender
+                            ? 0
+                            : bubbleRadius
+                        : 16),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                  child: Stack(
+                    children: <Widget>[
                       Padding(
-                        padding:
-                            EdgeInsets.fromLTRB(12 + 50, 6, rightPadding, 6),
-                        child: Text(
-                          nameFile,
-                          style: TextStyle(
+                        padding: EdgeInsets.fromLTRB(12, 6, rightPadding, 6),
+                        child: Container(
+                          width: 40.0,
+                          height: 40.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
                             color: Colors.white,
-                            fontWeight: FontWeight.bold,
                           ),
-                          textAlign: TextAlign.left,
+                          child: Icon(
+                            Icons.file_present_sharp,
+                            color: Colors.black54,
+                          ),
                         ),
                       ),
-                      Padding(
-                        padding:
-                            EdgeInsets.fromLTRB(12 + 50, 0, rightPadding, 6),
-                        child: Text(
-                          amountOfMemory,
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                    ],
-                  ),
-                  stateIcon != null && stateTick
-                      ? Positioned(
-                          bottom: 4,
-                          right: 6,
-                          child: stateIcon,
-                        )
-                      : SizedBox(
-                          width: 1,
-                        ),
-                  timestamp != null
-                      ? Positioned(
-                          bottom: 4,
-                          right: stateTick ? 26 : 6,
-                          child: Text(
-                            DateFormat('HH:mm').format(timestamp!),
-                            style: textStyle.copyWith(
-                              fontSize: 12,
-                              color: Colors.white,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(
+                                12 + 50, 6, rightPadding, 6),
+                            child: Text(
+                              nameFile,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.left,
                             ),
                           ),
-                        )
-                      : SizedBox(
-                          width: 1,
-                        )
-                ],
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(
+                                12 + 50, 0, rightPadding, 6),
+                            child: Text(
+                              amountOfMemory,
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        ],
+                      ),
+                      stateIcon != null && stateTick
+                          ? Positioned(
+                              bottom: 4,
+                              right: 6,
+                              child: stateIcon,
+                            )
+                          : SizedBox(
+                              width: 1,
+                            ),
+                      timestamp != null
+                          ? Positioned(
+                              bottom: 4,
+                              right: stateTick ? 26 : 6,
+                              child: Text(
+                                DateFormat('HH:mm').format(timestamp!),
+                                style: textStyle.copyWith(
+                                  fontSize: 12,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          : SizedBox(
+                              width: 1,
+                            )
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
