@@ -9,6 +9,7 @@ library chat_bubbles_with_time;
 /// [BubbleNormalAudio]
 /// [BubbleSpecialThree]
 /// [BubbleNormalImage]
+/// [BubbleNormalFile]
 ///
 /// DATE CHIPS
 /// [DateChip]
@@ -27,3 +28,5 @@ export 'bubbles/bubble_special_three.dart';
 export 'date_chips/date_chip.dart';
 export 'message_bars/message_bar.dart';
 export 'bubbles/bubble_normal_image.dart';
+export 'bubbles/bubble_normal_file.dart';
+export 'widgets/loding_error_widget.dart';
