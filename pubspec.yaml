@@ -1,6 +1,6 @@
 name: chat_bubbles_with_time
-description: Flutter chat bubble widgets, similar to Whatsapp and more shapes. Easy to use and implement
-  chat bubbles.
+description: Flutter chat bubble widgets, similar to Whatsapp and more shapes.
+  Easy to use and implement chat bubbles.
 version: 1.5.0
 homepage: https://github.com/prahack/chat_bubbles
 
@@ -11,14 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
   intl: ^0.18.0
+  photo_view: ^0.14.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-screenshots:
-  - description: The Flutter chat_bubbles package logo.
-    path: images/logo/logo.png
-
-flutter:
-
+flutter: null

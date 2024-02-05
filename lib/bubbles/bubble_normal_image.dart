@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 const double BUBBLE_RADIUS_IMAGE = 16;
 
@@ -23,7 +26,7 @@ class BubbleNormalImage extends StatelessWidget {
   );
 
   final String id;
-  final Widget image;
+  final File image;
   final double bubbleRadius;
   final bool isSender;
   final Color color;
@@ -119,7 +122,7 @@ class BubbleNormalImage extends StatelessWidget {
                           padding: const EdgeInsets.all(4.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(bubbleRadius),
-                            child: image,
+                            child: Image.file(image, fit: BoxFit.cover),
                           ),
                         ),
                       ),
@@ -137,12 +140,33 @@ class BubbleNormalImage extends StatelessWidget {
                 ),
                 onTap: onTap ??
                     () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) {
-                        return _DetailScreen(
-                          tag: id,
-                          image: image,
-                        );
-                      }));
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  _DetailScreen(
+                            tag: id,
+                            image: image,
+                          ),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            const begin = 0.0;
+                            const end = 1.0;
+                            const curve = Curves.easeInOut;
+
+                            var tween = Tween(begin: begin, end: end)
+                                .chain(CurveTween(curve: curve));
+
+                            var opacityAnimation = tween.animate(animation);
+
+                            return FadeTransition(
+                              opacity: opacityAnimation,
+                              child: child,
+                            );
+                          },
+                        ),
+                      );
                     }),
           ),
         )
@@ -154,7 +178,7 @@ class BubbleNormalImage extends StatelessWidget {
 /// detail screen of the image, display when tap on the image bubble
 class _DetailScreen extends StatefulWidget {
   final String tag;
-  final Widget image;
+  final File image;
 
   const _DetailScreen({Key? key, required this.tag, required this.image})
       : super(key: key);
@@ -177,18 +201,65 @@ class _DetailScreenState extends State<_DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Scaffold(
-        body: Center(
-          child: Hero(
-            tag: widget.tag,
-            child: widget.image,
-          ),
+    return Scaffold(
+      body: Center(
+        child: Stack(
+          children: [
+            PhotoView(
+              heroAttributes: PhotoViewHeroAttributes(tag: widget.tag),
+              enableRotation: true,
+              imageProvider: AssetImage(widget.image.path),
+            ),
+            Positioned(
+              top: 50.0,
+              left: 20.0,
+              child: Material(
+                  color: Colors.white10,
+                  borderRadius: BorderRadius.circular(25),
+                  child: InkWell(
+                      onTap: () => Navigator.pop(context),
+                      borderRadius: BorderRadius.circular(25),
+                      child: SizedBox(
+                        width: 32,
+                        height: 32,
+                        child: Icon(
+                          Icons.close,
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                      ))),
+
+              // child: IconButton(
+              //   icon: Icon(Icons.close),
+              //   color: Colors.white,
+              //   onPressed: () {
+              //     // Close the screen when pressing the "Close" button
+              //     Navigator.pop(context);
+              //   },
+              // ),
+            ),
+          ],
         ),
       ),
-      onTap: () {
-        Navigator.pop(context);
-      },
     );
   }
+
+  // @override
+  // Widget build(BuildContext context) {
+  //   return GestureDetector(
+  //     child: Scaffold(
+  //       body: Center(
+  //         child: Hero(
+  //           tag: widget.tag,
+  //           child: PhotoView(
+  //             imageProvider: AssetImage(widget.image.path),
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //     onTap: () {
+  //       Navigator.pop(context);
+  //     },
+  //   );
+  // }
 }
