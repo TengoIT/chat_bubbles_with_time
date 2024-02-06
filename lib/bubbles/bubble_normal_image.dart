@@ -208,7 +208,7 @@ class _DetailScreenState extends State<_DetailScreen> {
             PhotoView(
               heroAttributes: PhotoViewHeroAttributes(tag: widget.tag),
               enableRotation: true,
-              imageProvider: AssetImage(widget.image.path),
+              imageProvider: FileImage(widget.image),
             ),
             Positioned(
               top: 50.0,
