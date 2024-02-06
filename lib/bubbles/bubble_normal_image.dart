@@ -201,46 +201,53 @@ class _DetailScreenState extends State<_DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Stack(
-          children: [
-            PhotoView(
-              heroAttributes: PhotoViewHeroAttributes(tag: widget.tag),
-              enableRotation: true,
-              imageProvider: FileImage(widget.image),
-            ),
-            Positioned(
-              top: 50.0,
-              left: 20.0,
-              child: Material(
-                  color: Colors.white10,
-                  borderRadius: BorderRadius.circular(25),
-                  child: InkWell(
-                      onTap: () => Navigator.pop(context),
-                      borderRadius: BorderRadius.circular(25),
-                      child: SizedBox(
-                        width: 32,
-                        height: 32,
-                        child: Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                      ))),
+    return GestureDetector(
+      child: Scaffold(
+        body: Center(
+          child: Stack(
+            children: [
+              PhotoView(
+                heroAttributes: PhotoViewHeroAttributes(tag: widget.tag),
+                enableRotation: true,
+                imageProvider: FileImage(widget.image),
+                minScale: PhotoViewComputedScale.contained * 0.8,
+                maxScale: PhotoViewComputedScale.covered * 2,
+              ),
+              Positioned(
+                top: 50.0,
+                left: 20.0,
+                child: Material(
+                    color: Colors.white10,
+                    borderRadius: BorderRadius.circular(25),
+                    child: InkWell(
+                        onTap: () => Navigator.pop(context),
+                        borderRadius: BorderRadius.circular(25),
+                        child: SizedBox(
+                          width: 32,
+                          height: 32,
+                          child: Icon(
+                            Icons.close,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                        ))),
 
-              // child: IconButton(
-              //   icon: Icon(Icons.close),
-              //   color: Colors.white,
-              //   onPressed: () {
-              //     // Close the screen when pressing the "Close" button
-              //     Navigator.pop(context);
-              //   },
-              // ),
-            ),
-          ],
+                // child: IconButton(
+                //   icon: Icon(Icons.close),
+                //   color: Colors.white,
+                //   onPressed: () {
+                //     // Close the screen when pressing the "Close" button
+                //     Navigator.pop(context);
+                //   },
+                // ),
+              ),
+            ],
+          ),
         ),
       ),
+      onTap: () {
+        Navigator.pop(context);
+      },
     );
   }
 
