@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -26,7 +26,7 @@ class BubbleNormalImage extends StatelessWidget {
   );
 
   final String id;
-  final File image;
+  final Uint8List image;
   final double bubbleRadius;
   final bool isSender;
   final Color color;
@@ -122,7 +122,7 @@ class BubbleNormalImage extends StatelessWidget {
                           padding: const EdgeInsets.all(4.0),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(bubbleRadius),
-                            child: Image.file(image, fit: BoxFit.cover),
+                            child: Image.memory(image, fit: BoxFit.cover),
                           ),
                         ),
                       ),
@@ -178,7 +178,7 @@ class BubbleNormalImage extends StatelessWidget {
 /// detail screen of the image, display when tap on the image bubble
 class _DetailScreen extends StatefulWidget {
   final String tag;
-  final File image;
+  final Uint8List image;
 
   const _DetailScreen({Key? key, required this.tag, required this.image})
       : super(key: key);
@@ -209,7 +209,7 @@ class _DetailScreenState extends State<_DetailScreen> {
               PhotoView(
                 heroAttributes: PhotoViewHeroAttributes(tag: widget.tag),
                 enableRotation: true,
-                imageProvider: FileImage(widget.image),
+                imageProvider: MemoryImage(widget.image),
                 minScale: PhotoViewComputedScale.contained * 0.8,
                 maxScale: PhotoViewComputedScale.covered * 2,
               ),
