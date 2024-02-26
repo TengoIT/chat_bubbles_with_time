@@ -14,7 +14,7 @@ const double BUBBLE_RADIUS = 16;
 ///[sent],[delivered] and [seen] can be used to display the message state
 ///chat bubble [TextStyle] can be customized using [textStyle]
 
-class BubbleNormal extends StatelessWidget {
+class BubbleNormal extends StatefulWidget {
   final double bubbleRadius;
   final bool isSender;
   final Color color;
@@ -26,12 +26,14 @@ class BubbleNormal extends StatelessWidget {
   final TextStyle textStyle;
   final DateTime? timestamp;
   final BoxConstraints? constraints;
+  final Future<String> Function(String)? translateFunction;
 
-  BubbleNormal({
+  const BubbleNormal({
     Key? key,
     required this.text,
     this.constraints,
     this.timestamp,
+    this.translateFunction,
     this.bubbleRadius = BUBBLE_RADIUS,
     this.isSender = true,
     this.color = Colors.white70,
@@ -45,24 +47,75 @@ class BubbleNormal extends StatelessWidget {
     ),
   }) : super(key: key);
 
+  @override
+  State<BubbleNormal> createState() => _BubbleNormalState();
+}
+
+class _BubbleNormalState extends State<BubbleNormal> {
+  // late String originalText;
+  late String displayText;
+  String? translateText;
+  bool isTranslated = false;
+
+  @override
+  void initState() {
+    displayText = widget.text;
+    // originalText = widget.text;
+    // print(displayText);
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant BubbleNormal oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.text != oldWidget.text) {
+      setState(() {
+        // originalText = widget.text;
+        if (!isTranslated) {
+          displayText = widget.text;
+        } else {
+          displayText = translateText!;
+        }
+      });
+      print('didUpdateWidget ${widget.text} $displayText');
+    }
+  }
+
+  void toggleTranslation() async {
+    if (isTranslated) {
+      setState(() {
+        displayText = widget.text;
+        isTranslated = false;
+      });
+    } else {
+      try {
+        translateText =
+            translateText ?? await widget.translateFunction!(widget.text);
+
+        setState(() {
+          displayText = translateText!;
+          isTranslated = true;
+        });
+      } catch (e) {
+        translateText = 'Error Yandex Translator';
+      }
+    }
+  }
+
   ///chat bubble builder method
   @override
   Widget build(BuildContext context) {
     bool stateTick = false;
     Widget? stateIcon;
-    if (sent) {
+    if (widget.sent) {
       stateTick = true;
-      // stateIcon = Text(
-      //   '12:30',
-      //   style: TextStyle(fontSize: 12),
-      // );
       stateIcon = Icon(
         Icons.done,
         size: 18,
         color: Color(0xFF97AD8E),
       );
     }
-    if (delivered) {
+    if (widget.delivered) {
       stateTick = true;
       stateIcon = Icon(
         Icons.done_all,
@@ -70,7 +123,7 @@ class BubbleNormal extends StatelessWidget {
         color: Color(0xFF97AD8E),
       );
     }
-    if (seen) {
+    if (widget.seen) {
       stateTick = true;
       stateIcon = Icon(
         Icons.done_all,
@@ -81,11 +134,11 @@ class BubbleNormal extends StatelessWidget {
 
     double rightPadding = 12;
     rightPadding += stateTick ? 16 : 0;
-    rightPadding += timestamp != null ? 32 : 0;
+    rightPadding += widget.timestamp != null ? 32 : 0;
 
     return Row(
       children: <Widget>[
-        isSender
+        widget.isSender
             ? Expanded(
                 child: SizedBox(
                   width: 5,
@@ -94,60 +147,95 @@ class BubbleNormal extends StatelessWidget {
             : Container(),
         Container(
           color: Colors.transparent,
-          constraints: constraints ??
+          constraints: widget.constraints ??
               BoxConstraints(maxWidth: MediaQuery.of(context).size.width * .8),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
             child: Container(
               decoration: BoxDecoration(
-                color: color,
+                color: widget.color,
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(bubbleRadius),
-                  topRight: Radius.circular(bubbleRadius),
-                  bottomLeft: Radius.circular(tail
-                      ? isSender
-                          ? bubbleRadius
+                  topLeft: Radius.circular(widget.bubbleRadius),
+                  topRight: Radius.circular(widget.bubbleRadius),
+                  bottomLeft: Radius.circular(widget.tail
+                      ? widget.isSender
+                          ? widget.bubbleRadius
                           : 0
                       : BUBBLE_RADIUS),
-                  bottomRight: Radius.circular(tail
-                      ? isSender
+                  bottomRight: Radius.circular(widget.tail
+                      ? widget.isSender
                           ? 0
-                          : bubbleRadius
+                          : widget.bubbleRadius
                       : BUBBLE_RADIUS),
                 ),
               ),
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(12, 6, rightPadding, 6),
-                    child: Text(
-                      text,
-                      style: textStyle,
-                      textAlign: TextAlign.left,
-                    ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: widget.translateFunction == null
+                      ? null
+                      : toggleTranslation,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(widget.bubbleRadius),
+                    topRight: Radius.circular(widget.bubbleRadius),
+                    bottomLeft: Radius.circular(widget.tail
+                        ? widget.isSender
+                            ? widget.bubbleRadius
+                            : 0
+                        : BUBBLE_RADIUS),
+                    bottomRight: Radius.circular(widget.tail
+                        ? widget.isSender
+                            ? 0
+                            : widget.bubbleRadius
+                        : BUBBLE_RADIUS),
                   ),
-                  stateIcon != null && stateTick
-                      ? Positioned(
-                          bottom: 4,
-                          right: 6,
-                          child: stateIcon,
-                        )
-                      : SizedBox(
-                          width: 1,
+                  child: Stack(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(12, 6, rightPadding, 6),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Flexible(
+                              child: Text(
+                                displayText,
+                                style: widget.textStyle,
+                                textAlign: TextAlign.left,
+                              ),
+                            ),
+                            isTranslated
+                                ? Icon(
+                                    Icons.translate,
+                                    color: Colors.white,
+                                  )
+                                : SizedBox.shrink(),
+                          ],
                         ),
-                  timestamp != null
-                      ? Positioned(
-                          bottom: 4,
-                          right: stateTick ? 26 : 6,
-                          child: Text(
-                            DateFormat('HH:mm').format(timestamp!),
-                            style: textStyle.copyWith(fontSize: 12),
-                          ),
-                        )
-                      : SizedBox(
-                          width: 1,
-                        )
-                ],
+                      ),
+                      stateIcon != null && stateTick
+                          ? Positioned(
+                              bottom: 4,
+                              right: 6,
+                              child: stateIcon,
+                            )
+                          : SizedBox(
+                              width: 1,
+                            ),
+                      widget.timestamp != null
+                          ? Positioned(
+                              bottom: 4,
+                              right: stateTick ? 26 : 6,
+                              child: Text(
+                                DateFormat('HH:mm').format(widget.timestamp!),
+                                style: widget.textStyle.copyWith(fontSize: 12),
+                              ),
+                            )
+                          : SizedBox(
+                              width: 1,
+                            )
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
