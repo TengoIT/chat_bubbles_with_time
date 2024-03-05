@@ -26,6 +26,7 @@ class BubbleNormal extends StatelessWidget {
   final TextStyle textStyle;
   final DateTime? timestamp;
   final BoxConstraints? constraints;
+  final VoidCallback? openTranslate;
 
   BubbleNormal({
     Key? key,
@@ -43,6 +44,7 @@ class BubbleNormal extends StatelessWidget {
       color: Colors.black87,
       fontSize: 16,
     ),
+    this.openTranslate,
   }) : super(key: key);
 
   ///chat bubble builder method
@@ -116,38 +118,58 @@ class BubbleNormal extends StatelessWidget {
                       : BUBBLE_RADIUS),
                 ),
               ),
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(12, 6, rightPadding, 6),
-                    child: Text(
-                      text,
-                      style: textStyle,
-                      textAlign: TextAlign.left,
-                    ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: openTranslate == null ? null : openTranslate,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(bubbleRadius),
+                    topRight: Radius.circular(bubbleRadius),
+                    bottomLeft: Radius.circular(tail
+                        ? isSender
+                            ? bubbleRadius
+                            : 0
+                        : BUBBLE_RADIUS),
+                    bottomRight: Radius.circular(tail
+                        ? isSender
+                            ? 0
+                            : bubbleRadius
+                        : BUBBLE_RADIUS),
                   ),
-                  stateIcon != null && stateTick
-                      ? Positioned(
-                          bottom: 4,
-                          right: 6,
-                          child: stateIcon,
-                        )
-                      : SizedBox(
-                          width: 1,
+                  child: Stack(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(12, 6, rightPadding, 6),
+                        child: Text(
+                          text,
+                          style: textStyle,
+                          textAlign: TextAlign.left,
                         ),
-                  timestamp != null
-                      ? Positioned(
-                          bottom: 4,
-                          right: stateTick ? 26 : 6,
-                          child: Text(
-                            DateFormat('HH:mm').format(timestamp!),
-                            style: textStyle.copyWith(fontSize: 12),
-                          ),
-                        )
-                      : SizedBox(
-                          width: 1,
-                        )
-                ],
+                      ),
+                      stateIcon != null && stateTick
+                          ? Positioned(
+                              bottom: 4,
+                              right: 6,
+                              child: stateIcon,
+                            )
+                          : SizedBox(
+                              width: 1,
+                            ),
+                      timestamp != null
+                          ? Positioned(
+                              bottom: 4,
+                              right: stateTick ? 26 : 6,
+                              child: Text(
+                                DateFormat('HH:mm').format(timestamp!),
+                                style: textStyle.copyWith(fontSize: 12),
+                              ),
+                            )
+                          : SizedBox(
+                              width: 1,
+                            )
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
