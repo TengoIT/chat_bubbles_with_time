@@ -7,11 +7,8 @@ import 'package:flutter/material.dart';
 class DateChipWithoutAlgo extends StatelessWidget {
   final Color color;
   final String text;
-  late final DateTime date;
+  final DateTime date;
 
-  ///
-  ///
-  ///
   DateChipWithoutAlgo({
     Key? key,
     required this.text,

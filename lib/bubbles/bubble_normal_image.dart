@@ -34,6 +34,7 @@ class BubbleNormalImage extends StatelessWidget {
   final bool sent;
   final bool delivered;
   final bool seen;
+  final DateTime? timestamp;
   final void Function()? onTap;
 
   const BubbleNormalImage({
@@ -48,6 +49,7 @@ class BubbleNormalImage extends StatelessWidget {
     this.delivered = false,
     this.seen = false,
     this.onTap,
+    this.timestamp,
   }) : super(key: key);
 
   /// image bubble builder method
