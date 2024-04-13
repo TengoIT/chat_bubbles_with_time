@@ -122,6 +122,9 @@ class BubbleNormal extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: openTranslate == null ? null : openTranslate,
+                  splashColor: Theme.of(context).platform == TargetPlatform.iOS
+                      ? Colors.transparent
+                      : null,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(bubbleRadius),
                     topRight: Radius.circular(bubbleRadius),

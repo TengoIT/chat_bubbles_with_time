@@ -102,6 +102,10 @@ class MessageBar extends StatelessWidget {
                         ),
                         InkWell(
                           onTap: onTapCloseReply,
+                          splashColor:
+                              Theme.of(context).platform == TargetPlatform.iOS
+                                  ? Colors.transparent
+                                  : null,
                           child: Icon(
                             Icons.close,
                             color: replyCloseColor,
@@ -165,6 +169,10 @@ class MessageBar extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(left: 16),
                     child: InkWell(
+                      splashColor:
+                          Theme.of(context).platform == TargetPlatform.iOS
+                              ? Colors.transparent
+                              : null,
                       child: Icon(
                         Icons.send,
                         color: sendButtonColor,

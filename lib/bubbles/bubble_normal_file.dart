@@ -118,6 +118,9 @@ class BubbleNormalFile extends StatelessWidget {
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: openFileFunc,
+                  splashColor: Theme.of(context).platform == TargetPlatform.iOS
+                      ? Colors.transparent
+                      : null,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(bubbleRadius),
                     topRight: Radius.circular(bubbleRadius),

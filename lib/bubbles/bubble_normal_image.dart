@@ -223,6 +223,10 @@ class _DetailScreenState extends State<_DetailScreen> {
                     borderRadius: BorderRadius.circular(25),
                     child: InkWell(
                         onTap: () => Navigator.pop(context),
+                        splashColor:
+                            Theme.of(context).platform == TargetPlatform.iOS
+                                ? Colors.transparent
+                                : null,
                         borderRadius: BorderRadius.circular(25),
                         child: SizedBox(
                           width: 32,
